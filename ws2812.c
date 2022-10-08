@@ -20,23 +20,18 @@ void WS2812_Init(void)
 void WS2812_SetLed(uint16_t led, uint8_t red, uint8_t green, uint8_t blue)
 {
 	uint32_t color = (green << 16) | (red << 8) | blue;
-	
+
 	for (uint8_t i = 0; i < 24; i++)
 	{
-		if (color & (1 << i))
-		{
-			LedData[led * 24 + i] = TimerAutoReloadRegisterPeriodTwoThirds;
-		}
-		else
-		{
-			LedData[led * 24 + i] = TimerAutoReloadRegisterPeriodOneThird;
-		}
+		LedData[led * 24 + 23 - i] = (color & (1 << i))
+			? TimerAutoReloadRegisterPeriodTwoThirds
+			: TimerAutoReloadRegisterPeriodOneThird;
 	}
 }
 
 void WS2812_Send(void)
 {
-	HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_1, (uint32_t *)LedData, LED_DATA_LENGTH);
+	HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_1, (uint32_t*)LedData, LED_DATA_LENGTH);
 	
 	while (!DataSentFlag);
 	
