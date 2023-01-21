@@ -4,6 +4,11 @@
 
 #include <stdint.h>
 
+// enable TIM1
+// ARR -1 = cpu in KHz / 800 KHz
+// egzample:
+// 90 -1 = 72000 KHz / 800 KHz
+
 #define LED_COUNT 2
 #define END_DELAY 50
 
